@@ -47,5 +47,6 @@
 
 - (NSArray *)guideFromDocument:(DDXMLDocument *)document;
 
+- (NSDictionary *)tocTitleFromDocument:(DDXMLDocument *)document;
 
 @end

@@ -114,7 +114,7 @@
         value = [[xmlElement attributeForName:@"full-path"] stringValue];
         count++;
     }
-    
+
     if (count == 1 && value)
     {
         return [baseURL URLByAppendingPathComponent:value];
@@ -196,18 +196,12 @@
     {
         DDXMLElement *metaNode = metaNodes[0];
         NSArray *metaElements = metaNode.children;
-        
+
         for (DDXMLElement* xmlElement in metaElements)
-        {            
+        {
             if ([self isValidNode:xmlElement])
             {
-                if (![metaData objectForKey:xmlElement.localName]) {
-                    metaData[xmlElement.localName] = xmlElement.stringValue;
-                }else{
-                    NSString * attributeString = [[[xmlElement attributes] firstObject] stringValue];
-                    NSString * metaDataKeyString = [NSString stringWithFormat:@"%@-%@", xmlElement.localName, attributeString];
-                    metaData[metaDataKeyString] = xmlElement.stringValue;
-                }
+                metaData[xmlElement.localName] = xmlElement.stringValue;
             }
         }
     }
@@ -351,6 +345,20 @@
     return guide;
 }
 
+- (NSDictionary *)tocTitleFromDocument:(DDXMLDocument *)document {
+    NSMutableDictionary *tocTitles = [NSMutableDictionary dictionary];
+    DDXMLElement *root  = [document rootElement];
+    DDXMLNode *defaultNamespace = [root namespaceForPrefix:@""];
+    defaultNamespace.name = @"default";
+    NSArray *tocNodes = [root nodesForXPath:@"//default:a" error:nil];
+    for (DDXMLElement *element in tocNodes) {
+        DDXMLNode *hrefNode = [element attributeForName:@"href"];
+        NSLog(@"%@ : %@", [hrefNode stringValue], [element stringValue]);
+        tocTitles[[hrefNode stringValue]] = [element stringValue];
+    }
+
+    return tocTitles;
+}
 
 - (BOOL)isValidNode:(DDXMLElement *)node
 {
