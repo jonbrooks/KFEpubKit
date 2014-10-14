@@ -112,7 +112,7 @@
             NSURL *tocUrl = [[self.destinationURL URLByAppendingPathComponent:@"OPS"] URLByAppendingPathComponent:@"toc.xhtml"];
             NSString *tocString = [NSString stringWithContentsOfURL:tocUrl encoding:NSUTF8StringEncoding error:nil];
             DDXMLDocument *tocDocument = [[DDXMLDocument alloc] initWithXMLString:tocString options:kNilOptions error:nil];
-            self.contentModel.tocTitles = [self.parser tocTitleFromDocument:tocDocument];
+            self.contentModel.toc = [self.parser tocFromDocument:tocDocument];
             if (self.delegate)
             {
                 [self.delegate epubController:self didOpenEpub:self.contentModel];

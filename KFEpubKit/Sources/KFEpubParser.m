@@ -345,8 +345,10 @@
     return guide;
 }
 
-- (NSDictionary *)tocTitleFromDocument:(DDXMLDocument *)document {
-    NSMutableDictionary *tocTitles = [NSMutableDictionary dictionary];
+- (NSArray *)tocFromDocument:(DDXMLDocument *)document {
+    NSMutableArray *toc = [NSMutableArray array];
+    
+    
     DDXMLElement *root  = [document rootElement];
     DDXMLNode *defaultNamespace = [root namespaceForPrefix:@""];
     defaultNamespace.name = @"default";
@@ -354,10 +356,13 @@
     for (DDXMLElement *element in tocNodes) {
         DDXMLNode *hrefNode = [element attributeForName:@"href"];
         NSLog(@"%@ : %@", [hrefNode stringValue], [element stringValue]);
-        tocTitles[[hrefNode stringValue]] = [element stringValue];
+        [toc addObject:@{
+            @"href" : [hrefNode stringValue],
+            @"title" : [element stringValue]
+        }];
     }
 
-    return tocTitles;
+    return toc;
 }
 
 - (BOOL)isValidNode:(DDXMLElement *)node
