@@ -56,8 +56,15 @@
 - (void)openAsynchronous:(BOOL)asynchronous
 {
     self.extractor = [[KFEpubExtractor alloc] initWithEpubURL:self.epubURL andDestinationURL:self.destinationURL];
-    self.extractor.delegate = self;
-    [self.extractor start:asynchronous];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:self.destinationURL.path]) {
+        [self epubExtractorDidStartExtracting:nil];
+        [self epubExtractorDidFinishExtracting:nil];
+    } else {
+        self.extractor.delegate = self;
+        [self.extractor start:asynchronous];
+    }
+    
 }
 
 
@@ -101,7 +108,11 @@
             self.contentModel.manifest = [self.parser manifestFromDocument:document];
             self.contentModel.spine = [self.parser spineFromDocument:document];
             self.contentModel.guide = [self.parser guideFromDocument:document];
-
+            
+            NSURL *tocUrl = [[self.destinationURL URLByAppendingPathComponent:@"OPS"] URLByAppendingPathComponent:@"toc.xhtml"];
+            NSString *tocString = [NSString stringWithContentsOfURL:tocUrl encoding:NSUTF8StringEncoding error:nil];
+            DDXMLDocument *tocDocument = [[DDXMLDocument alloc] initWithXMLString:tocString options:kNilOptions error:nil];
+            self.contentModel.tocTitles = [self.parser tocTitleFromDocument:tocDocument];
             if (self.delegate)
             {
                 [self.delegate epubController:self didOpenEpub:self.contentModel];
