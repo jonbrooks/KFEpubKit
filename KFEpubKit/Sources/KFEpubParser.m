@@ -347,22 +347,27 @@
 
 - (NSArray *)tocFromDocument:(DDXMLDocument *)document {
     NSMutableArray *toc = [NSMutableArray array];
-    
-    
+        
     DDXMLElement *root  = [document rootElement];
     DDXMLNode *defaultNamespace = [root namespaceForPrefix:@""];
     defaultNamespace.name = @"default";
     NSArray *tocNodes = [root nodesForXPath:@"//default:a" error:nil];
     for (DDXMLElement *element in tocNodes) {
         DDXMLNode *hrefNode = [element attributeForName:@"href"];
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"ol" options:NSRegularExpressionCaseInsensitive error:nil];
+        NSString *xpath = element.XPath;
+        NSInteger level = [regex numberOfMatchesInString:xpath options:0 range:NSMakeRange(0, xpath.length)];
+
         NSLog(@"%@ : %@", [hrefNode stringValue], [element stringValue]);
         [toc addObject:@{
-            @"href" : [hrefNode stringValue],
-            @"title" : [element stringValue]
-        }];
+                         @"href" : [hrefNode stringValue],
+                         @"title" : [element stringValue],
+                         @"level" : @(level)
+                         }];
     }
-
+    
     return toc;
+
 }
 
 - (BOOL)isValidNode:(DDXMLElement *)node
