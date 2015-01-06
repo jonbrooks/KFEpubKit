@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>4D0DC4D6-45D3-481C-98B2-00B31E260D21</string>
+	<key>IDESourceControlProjectName</key>
+	<string>KFEpubKit</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>C792DEBD7A3A366B222D3EB1A549D5E1D5619053</key>
+		<string>https://github.com/jonbrooks/KFEpubKit.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>KFEpubKit.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>C792DEBD7A3A366B222D3EB1A549D5E1D5619053</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/jonbrooks/KFEpubKit.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C792DEBD7A3A366B222D3EB1A549D5E1D5619053</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C792DEBD7A3A366B222D3EB1A549D5E1D5619053</string>
+			<key>IDESourceControlWCCName</key>
+			<string>KFEpubKit</string>
+		</dict>
+	</array>
+</dict>
+</plist>
