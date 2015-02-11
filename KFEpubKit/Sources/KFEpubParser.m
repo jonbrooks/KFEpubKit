@@ -345,30 +345,82 @@
     return guide;
 }
 
-- (NSArray *)tocFromDocument:(DDXMLDocument *)document {
+- (NSArray *)tocFromDocument:(DDXMLDocument *)document
+{
     NSMutableArray *toc = [NSMutableArray array];
-        
+    
     DDXMLElement *root  = [document rootElement];
     DDXMLNode *defaultNamespace = [root namespaceForPrefix:@""];
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"ol" options:NSRegularExpressionCaseInsensitive error:nil];
-    
     defaultNamespace.name = @"default";
-    NSArray *tocNodes = [root nodesForXPath:@"//default:a" error:nil];
-    for (DDXMLElement *element in tocNodes) {
-        DDXMLNode *hrefNode = [element attributeForName:@"href"];
+    NSArray *mapNodes = [root nodesForXPath:@"//default:navMap" error:nil];
+    
+    if ([mapNodes count] == 1)
+    {
+        NSArray *itemElements = ((DDXMLElement *)mapNodes[0]).children;
         
-        NSString *xpath = element.XPath;
-        NSInteger level = [regex numberOfMatchesInString:xpath options:0 range:NSMakeRange(0, xpath.length)];
-
-        [toc addObject:@{
-                         @"href" : [hrefNode stringValue],
-                         @"title" : [element stringValue],
-                         @"level" : @(level)
-                         }];
+        [self findTocItemsFrom:itemElements addTo:toc atLevel:1];
+    }
+    else
+    {
+        NSLog(@"map data invalid");
     }
     
     return toc;
+}
 
+- (void)findTocItemsFrom:(NSArray *)elements addTo:(NSMutableArray *)toc atLevel:(NSInteger)level
+{
+    if (elements == nil || [elements count] == 0) return;
+    
+    for (DDXMLElement *xmlElement in elements)
+    {
+        NSString *title = nil;
+        NSString *href = nil;
+        
+        NSArray *e;
+        
+        // retrieve the title
+        e = [xmlElement elementsForName:@"navLabel"];
+        if ([e count] == 1)
+        {
+            e = [e[0] elementsForName:@"text"];
+            if ([e count] == 1)
+            {
+                title = [e[0] stringValue];
+            }
+            else
+            {
+                NSLog(@"toc data invalid (text)");
+            }
+        }
+        else
+        {
+            NSLog(@"toc data invalid (navLabel)");
+        }
+        
+        // retrieve the href
+        e = [xmlElement elementsForName:@"content"];
+        if ([e count] == 1)
+        {
+            href = [[e[0] attributeForName:@"src"] stringValue];
+        }
+        else
+        {
+            NSLog(@"toc data invalid (content)");
+        }
+        
+        // add toc entry
+        if (href && title)
+        {
+            [toc addObject:@{@"href" : href,
+                             @"title" : title,
+                             @"level" : @(level)}];
+        }
+        
+        // retrieve toc items at the next level
+        e = [xmlElement elementsForName:@"navPoint"];
+        [self findTocItemsFrom:e addTo:toc atLevel:level+1];
+    }
 }
 
 - (BOOL)isValidNode:(DDXMLElement *)node

@@ -109,7 +109,7 @@
             self.contentModel.spine = [self.parser spineFromDocument:document];
             self.contentModel.guide = [self.parser guideFromDocument:document];
             
-            NSURL *tocUrl = [[self.destinationURL URLByAppendingPathComponent:@"OPS"] URLByAppendingPathComponent:@"toc.xhtml"];
+            NSURL *tocUrl = [self.epubContentBaseURL URLByAppendingPathComponent:@"toc.ncx"];
             NSString *tocString = [NSString stringWithContentsOfURL:tocUrl encoding:NSUTF8StringEncoding error:nil];
             DDXMLDocument *tocDocument = [[DDXMLDocument alloc] initWithXMLString:tocString options:kNilOptions error:nil];
             self.contentModel.toc = [self.parser tocFromDocument:tocDocument];
