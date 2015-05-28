@@ -229,18 +229,34 @@
         NSString *toc = [[spineElement attributeForName:@"toc"] stringValue];
         if (toc)
         {
-            [spine addObject:toc];
+            //The toc is a special item, which really shouldn't be included in the spine items.
+            //Rather than reengineer KFEpubParser, we just mark it as non-linear.
+            [spine addObject:@{ @"idref": toc,
+                                @"linear" : @(NO)}];
         }
         else
         {
-            [spine addObject:@""];
+            [spine addObject:@{ @"idref": @"",
+                                @"linear" : @(NO)}];
         }
         NSArray *spineElements = spineElement.children;
         for (DDXMLElement* xmlElement in spineElements)
         {
             if ([self isValidNode:xmlElement])
             {
-                [spine addObject:[[xmlElement attributeForName:@"idref"] stringValue]];
+                NSString *idref = [[xmlElement attributeForName:@"idref"] stringValue];
+                
+                //If linear property is not present, default is true
+                BOOL isLinear = YES;
+                
+                NSString *linearValue = [[xmlElement attributeForName:@"linear"] stringValue];
+                
+                if (linearValue) {
+                    isLinear = [linearValue boolValue];
+                }
+                
+                [spine addObject:@{ @"idref": idref,
+                                    @"linear" : @(isLinear)}];
             }
         }
     }
